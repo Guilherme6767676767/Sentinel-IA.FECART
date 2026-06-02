@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel IA Brasil - Centro Nacional de Monitoramento de Riscos</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Plataforma avançada de inteligência artificial para monitoramento de criminalidade, queimadas, enchentes e riscos territoriais em 100% do território nacional.">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- App Stylesheet -->
+  <script type="module" crossorigin src="/assets/index-Dawoi1Q4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-oUqS1NJG.css">
+</head>
+<body class="dark-theme">
+  <div class="dashboard-container">
+    
+    <!-- HEADER -->
+    <header class="main-header">
+      <div class="header-logo">
+        <div class="pulse-indicator status-online" id="statusIndicator"></div>
+        <i class="fa-solid fa-shield-halved main-icon"></i>
+        <div class="logo-text">
+          <h1>SENTINEL <span class="accent-color">IA</span></h1>
+          <span class="sub-logo">MONITORAMENTO NACIONAL DE RISCOS</span>
+        </div>
+      </div>
+      
+      <div class="global-ticker">
+        <div class="ticker-item">
+          <span class="ticker-label">RISCO MÉDIO NACIONAL</span>
+          <span class="ticker-value text-orange" id="globalRiskVal">48% MODERADO</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-label">ALERTAS ATIVOS</span>
+          <span class="ticker-value text-red" id="globalAlertsCount">142</span>
+        </div>
+        <div class="ticker-item hide-mobile">
+          <span class="ticker-label">COBERTURA TERRITORIAL</span>
+          <span class="ticker-value text-green">100% ATIVA</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="date-time-container">
+          <span id="currentDate">02/06/2026</span>
+          <span id="currentTime" class="time-glow">16:37:25</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="dashboard-body">
+      
+      <!-- LEFT PANEL (Control & Realtime Feed) -->
+      <section class="panel left-panel">
+        
+        <!-- Filter Controls -->
+        <div class="panel-section">
+          <h2 class="section-title"><i class="fa-solid fa-sliders"></i> Foco do Monitoramento</h2>
+          <div class="filter-grid" id="focoFiltro">
+            <button class="filter-btn active" data-foco="geral">
+              <i class="fa-solid fa-earth-americas"></i> Geral
+            </button>
+            <button class="filter-btn" data-foco="crime">
+              <i class="fa-solid fa-handcuffs"></i> Crime
+            </button>
+            <button class="filter-btn" data-foco="clima">
+              <i class="fa-solid fa-cloud-bolt"></i> Clima
+            </button>
+            <button class="filter-btn" data-foco="desastre">
+              <i class="fa-solid fa-house-crack"></i> Desastres
+            </button>
+            <button class="filter-btn" data-foco="infra">
+              <i class="fa-solid fa-triangle-exclamation"></i> Infraestrutura
+            </button>
+            <button class="filter-btn" data-foco="queimadas">
+              <i class="fa-solid fa-fire"></i> Queimadas
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Agent Section -->
+        <div class="panel-section growable">
+          <h2 class="section-title"><i class="fa-solid fa-brain"></i> Diagnóstico de IA Sentinel</h2>
+          <div class="ai-report-box">
+            <div class="ai-header">
+              <span class="ai-badge"><i class="fa-solid fa-robot"></i> AGENTE PREDITIVO ATIVO</span>
+              <span class="typing-indicator" id="typingIndicator">Analisando dados...</span>
+            </div>
+            <div class="ai-content" id="aiReportText">
+              Iniciando varredura territorial inteligente... Sentinel IA conectada aos sensores meteorológicos, dados de segurança pública e imagens de satélite do INPE. Selecione uma região no mapa para focar o diagnóstico.
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Notifications Feed -->
+        <div class="panel-section feed-section">
+          <h2 class="section-title flex-header">
+            <span><i class="fa-solid fa-bolt-lightning text-yellow"></i> Feed de Eventos Tempo Real</span>
+            <span class="badge" id="feedCounter">0</span>
+          </h2>
+          <div class="feed-container" id="eventsFeed">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- CENTRAL MAP SECTION -->
+      <section class="map-section">
+        
+        <!-- Floating Layer Selector -->
+        <div class="map-controls">
+          <button class="map-layer-btn active" id="layerHeat" title="Mapa de Calor de Incidentes">
+            <i class="fa-solid fa-fire-flame-curved"></i> Mapa de Calor
+          </button>
+          <button class="map-layer-btn" id="layerStates" title="Divisão Estadual e Risco Agrupado">
+            <i class="fa-solid fa-map-location-dot"></i> Divisão Estadual
+          </button>
+          <button class="map-layer-btn" id="layerBiomes" title="Status dos Biomas Brasileiros">
+            <i class="fa-solid fa-tree"></i> Biomas
+          </button>
+          <button class="map-layer-btn" id="layerHighways" title="Rodovias e Eixos Logísticos">
+            <i class="fa-solid fa-road"></i> Rodovias
+          </button>
+        </div>
+
+        <!-- Map container -->
+        <div id="map"></div>
+
+        <!-- Legend Overlay -->
+        <div class="map-legend">
+          <h4>Escala de Severidade de Risco</h4>
+          <div class="legend-scale">
+            <div class="scale-item">
+              <span class="color-box risk-very-low"></span>
+              <span class="scale-label">Muito Baixo</span>
+            </div>
+            <div class="scale-item">
+              <span class="color-box risk-low"></span>
+              <span class="scale-label">Baixo</span>
+            </div>
+            <div class="scale-item">
+              <span class="color-box risk-moderate"></span>
+              <span class="scale-label">Moderado</span>
+            </div>
+            <div class="scale-item">
+              <span class="color-box risk-high"></span>
+              <span class="scale-label">Alto</span>
+            </div>
+            <div class="scale-item">
+              <span class="color-box risk-critical"></span>
+              <span class="scale-label">Crítico</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL (Detailed Statistics) -->
+      <section class="panel right-panel">
+        
+        <!-- Region Overview -->
+        <div class="panel-section">
+          <h2 class="section-title" id="selectedRegionTitle"><i class="fa-solid fa-location-crosshairs"></i> Visão Geral: BRASIL</h2>
+          
+          <div class="stats-cards-grid">
+            <div class="stat-card">
+              <span class="stat-label">ÍNDICE DE RISCO</span>
+              <span class="stat-value text-orange" id="statRiskScore">48%</span>
+              <div class="stat-footer" id="statRiskLevel">Risco Moderado</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">ÁREA MONITORADA</span>
+              <span class="stat-value" id="statArea">8,5M km²</span>
+              <div class="stat-footer text-green">100% de Cobertura</div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">SITUAÇÃO DE ALERTA</span>
+              <span class="stat-value text-red" id="statAlerts">142</span>
+              <div class="stat-footer">Ações preventivas recomendadas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="panel-section chart-section growable">
+          <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Distribuição dos Riscos (%)</h2>
+          <div class="chart-wrapper">
+            <canvas id="riskProfileChart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel-section chart-section">
+          <h2 class="section-title"><i class="fa-solid fa-chart-line"></i> Histórico de Estabilidade (24h)</h2>
+          <div class="chart-wrapper">
+            <canvas id="riskTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Manual Actions & Simulation -->
+        <div class="panel-section container-actions">
+          <h2 class="section-title"><i class="fa-solid fa-gamepad"></i> Simulações & Controles</h2>
+          <div class="btn-group">
+            <button class="action-btn btn-danger" id="btnSimulateEvent">
+              <i class="fa-solid fa-triangle-exclamation animate-flash"></i> Forçar Alerta Crítico
+            </button>
+            <button class="action-btn btn-secondary" id="btnExportReport">
+              <i class="fa-solid fa-file-pdf"></i> Exportar Relatório
+            </button>
+            <button class="action-btn btn-secondary" id="btnResetMap">
+              <i class="fa-solid fa-house-laptop"></i> Restaurar Foco Nacional
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Notification Overlay Modal (Simulated Alert) -->
+  <div class="modal-overlay" id="criticalModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fa-solid fa-circle-radiation radiation-pulse text-red-dark"></i>
+        <h2>ALERTA CRÍTICO ATIVO</h2>
+      </div>
+      <div class="modal-body">
+        <p class="modal-meta" id="modalMeta">DATA: 02/06/2026 | LOCAL: BR-230 - Transamazônica</p>
+        <h3 id="modalEventTitle">Queimada descontrolada atinge áreas adjacentes à rodovia</h3>
+        <p id="modalDescription">Fortes ventos e baixa umidade propagam focos de incêndio com velocidade crítica. Visibilidade zero na rodovia. Risco extremo à população local e biodiversidade.</p>
+        <div class="modal-risk-badge" id="modalSeverity">SEVERIDADE: CRÍTICA (NÍVEL 5)</div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn btn-danger" id="btnCloseModal">Despachar Defesa Civil / Reconhecer Alerta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""></script>
+  
+  <!-- Leaflet Heatmap Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Core Logic (loads geodata automatically) -->
+</body>
+</html>
