@@ -1,7 +1,7 @@
 // Dados Geográficos do Brasil para Sentinel IA
 // Contém metadados dos estados, coordenadas simplificadas de biomas, rodovias federais e principais cidades
 
-export const BRAZIL_GEODATA = {
+const BRAZIL_GEODATA = {
   // Metadados dos 26 estados + Distrito Federal
   states: [
     { id: "AC", name: "Acre", capital: "Rio Branco", lat: -9.0238, lon: -70.812, region: "Norte", baseRisk: 0.35 },

@@ -1,5 +1,4 @@
 // Sentinel IA Brasil - Logic & Core Engine
-import { BRAZIL_GEODATA } from "./brazil-states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // --- INICIALIZAÇÃO DE ESTADOS E MAPA ---
@@ -513,8 +512,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (selectedRegion.name === "BRASIL") {
         currentRisk = 0.48; // Risco global base
       } else {
-        // Encontrar base risk real
-        const st = BRAZIL_GEODATA.states.find(s => s.name === selectedRegion.name);
+        // Encontrar base risk real limpando parênteses e siglas
+        const cleanName = selectedRegion.name.split("(")[0].trim().toLowerCase();
+        const st = BRAZIL_GEODATA.states.find(s => s.name.toLowerCase() === cleanName || s.id.toLowerCase() === cleanName);
         if (st) {
           currentRisk = adjustRiskByFoco(st.baseRisk, st.id, activeFoco);
         } else {
@@ -877,7 +877,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       title: "Queimada severa ameaça reserva ecológica e rodovia no Mato Grosso",
-      meta: "ESTADO: MATO GRASS (SINOP) | QUEIMADAS / MEIO AMBIENTE",
+      meta: "ESTADO: MATO GROSSO (SINOP) | QUEIMADAS / MEIO AMBIENTE",
       desc: "Satélites infravermelhos detectaram múltiplas frentes de fogo ativo com altura de labareda estimada em 8 metros. Ventos de 40km/h dificultam contenção rápida. Rodovia BR-163 sob fumaça tóxica.",
       lat: -11.86,
       lon: -55.50
